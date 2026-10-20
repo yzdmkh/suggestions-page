@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقديم اقتراح تطويري</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('tent.jpeg');
+	    background-size: cover;
+	    background-position: center;
+	    background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+	.logo-container {
+    		text-align: center;
+    		margin-bottom: 20px;
+	}
+	.logo-container img {
+    		max-width: 150px; /* يمكنك زيادة أو تقليل الحجم من هنا */
+  		height: auto;
+	}
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 550px;
+        }
+        h2 {
+            color: #1a3333;
+            margin-bottom: 5px;
+            font-size: 24px;
+            text-align: center;
+        }
+        p.subtitle {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-group {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+            font-size: 14px;
+        }
+        input[type="email"], input[type="tel"], select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+            text-align: right;
+            font-family: inherit;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        input[type="file"] {
+            display: block;
+            margin-top: 5px;
+        }
+        .btn-submit {
+            background-color: #149362;
+            color: white;
+            border: none;
+            padding: 14px;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        .btn-submit:hover {
+            background-color: #0f724b;
+        }
+        .btn-submit:disabled {
+            background-color: #a0a0a0;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+	<div class="logo-container">
+        <img src="C:\Users\y.alhwsawi\Documents\tentSugest\asclogo.png" alt="شعار الجهة">
+    </div>
+    
+    <h2>صفحة اقتراح لتطوير جناح الخيمة</h2>
+    <p class="subtitle">يسعدنا استقبال أفكاركم ومقترحاتكم لتطوير القسم، يمكنك إرفاق صور أو فيديو توضيحي.</p>
+    
+    <form id="suggestionForm">
+        <div class="form-group">
+            <label for="email">البريد الإلكتروني</label>
+            <input type="email" id="email" placeholder="example@email.com" required>
+        </div>
+
+        <div class="form-group">
+            <label for="suggestion">تفاصيل الاقتراح التطويري</label>
+            <textarea id="suggestion" placeholder="اكتب تفاصيل مقترحك هنا..." required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="fileAttachment">إرفاق مواد توضيحية (صورة أو فيديو)</label>
+            <!-- يقبل حقل الرفع الصور والفيديوهات بجميع صيغها -->
+            <input type="file" id="fileAttachment" accept="image/*,video/*">
+        </div>
+        
+        <button type="submit" class="btn-submit">إرسال الاقتراح</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('suggestionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // استبدل هذا الرابط برابط سكريبت جوجل الجديد الخاص بك
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzkLDPn4Ie6iTZraP2uiLUZ6k65rRHsNck3F2Okr4j8Ax8iUklld9a3ALYHVcowHFbj/exec';
+        
+        const submitBtn = document.querySelector('.btn-submit');
+        submitBtn.innerText = 'جاري رفع البيانات والملفات...';
+        submitBtn.disabled = true;
+
+        const fileInput = document.getElementById('fileAttachment');
+        const file = fileInput.files[0];
+
+        const payload = {
+            email: document.getElementById('email').value,
+            suggestion: document.getElementById('suggestion').value,
+            fileData: null,
+            fileName: null
+        };
+
+        // إذا كان هناك ملف مرفع، نقوم بتحويله لـ Base64 أولاً ثم إرساله
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                payload.fileData = reader.result;
+                payload.fileName = file.name;
+                sendData(scriptURL, payload, submitBtn);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // إرسال البيانات مباشرة في حال عدم وجود مرفقات
+            sendData(scriptURL, payload, submitBtn);
+        }
+    });
+
+    function sendData(url, data, button) {
+        fetch(url, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(() => {
+            alert('شكراً لك! تم استلام اقتراحك وحفظ المرفقات بنجاح.');
+            document.getElementById('suggestionForm').reset();
+            button.innerText = 'إرسال الاقتراح';
+            button.disabled = false;
+        })
+        .catch(error => {
+            console.error('خطأ!', error);
+            alert('حدث خطأ أثناء الإرسال، يرجى المحاولة لاحقاً.');
+            button.innerText = 'إرسال الاقتراح';
+            button.disabled = false;
+        });
+    }
+</script>
+
+</body>
+</html>
